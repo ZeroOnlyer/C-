@@ -1,0 +1,72 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<functional>
+using namespace std;
+
+template<typename Container>
+void showContainer(Container& con)
+{
+	typename Container::iterator it = con.begin();
+	for (; it != con.end(); ++it)
+	{
+		cout << *it << " ";
+	}
+	cout << endl;
+}
+
+template<typename iterator, typename Compare>
+iterator my_find_if(iterator first, iterator last, Compare comp)
+{
+	for (; first != last; ++first)
+	{
+		if (comp(*first))
+		{
+			return first;
+		}
+	}
+}
+
+template<typename Compare, typename T>
+class mybind1st_
+{
+public:
+	mybind1st_(Compare com, T val) :com_(com), val_(val) {}
+	bool operator() (const T& second)
+	{
+		return com_(val_, second);
+	}
+private:
+	Compare com_;
+	T val_;
+};
+
+
+template<typename Compare, typename T>
+mybind1st_<Compare, T>mybind1st(Compare comp, const T& val)
+{
+	return mybind1st_<Compare, T>(comp, val);
+}
+
+
+int main()
+{
+	vector<int>vec;
+	for (int i = 0; i <= 20; ++i)
+	{
+		vec.push_back(rand() % 100 + 1);
+	}
+
+	showContainer(vec);
+	sort(vec.begin(), vec.end());
+	showContainer(vec);
+	sort(vec.begin(), vec.end(), greater<int>());
+	showContainer(vec);
+
+	auto it1 = my_find_if(vec.begin(), vec.end(), mybind1st(greater<int>(), 70));
+	if (it1 != vec.end())
+	{
+		vec.insert(it1, 70);
+	}
+	showContainer(vec);
+}
