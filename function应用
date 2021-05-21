@@ -1,0 +1,98 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<functional>
+#include<string>
+#include<map>
+#include<unordered_map>
+using namespace std;
+
+void hello()
+{
+	cout << "hello world" << endl;
+}
+
+void hello1(string str)
+{
+	cout << str << endl;
+}
+
+string sum(string a, string b)
+{
+	return a + b;
+}
+
+class Test
+{
+public:
+	void hello2(string str)
+	{
+		cout << str << endl;
+	}
+};
+
+
+void doshow() { cout << "查看" << endl; }
+void doborrow() { cout << "借书" << endl; }
+void dorend() { cout << "还书" << endl; }
+void doQuery() { cout << "查书" << endl; }
+void doLoginout() { cout << "注销" << endl; }
+
+
+int main()
+{
+	function<void()>func1 = hello;
+	func1();//func1.operator() ()=>hello()
+
+	function<void(string)>func2 = hello1;
+	func2("hello hellwo w");//func2.operator()(string str)=>hello1()
+
+	function<string(string, string)>func3 = sum;
+	cout << func3("accade", "rrta") << endl;
+
+	function<int(int, int)>func4 = [](int a, int b)->int {return a + b; };
+	cout << func4(99, 3) << endl;
+
+	Test a;
+	function<void(Test*, string)>func5 = &Test::hello2;
+	func5(&a, "jkakdad");
+
+	map<int, function<void()>>mymap;
+	mymap.insert(make_pair(1, doshow));
+	mymap.insert(make_pair(2, doborrow));
+	mymap.insert({ 3,dorend });
+	mymap.insert({ 4,doQuery });
+	mymap.insert({ 5,doLoginout });
+
+
+	int choice = 0;
+	while (1)
+	{
+		cout << "-----------------" << endl;
+		cout << "1.查看所有书籍信息" << endl;
+		cout << "2.借书" << endl;
+		cout << "3.还书" << endl;
+		cout << "4.查询书籍" << endl;
+		cout << "5.注销" << endl;
+		cout << "-----------------" << endl;
+		cout << "请选择:";
+		cin >> choice;
+		auto it = mymap.find(choice);
+		if (it == mymap.end())
+		{
+			cout << "请重新输入" << endl;
+		}
+		else
+		{
+			it->second();
+		}
+
+		/*switch (choice)
+		{
+		case 1:
+			break;
+		default:
+			break;
+		}*/
+	}
+}
